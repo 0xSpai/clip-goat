@@ -1,7 +1,7 @@
 import time
 import modules.twitch.clip_fetch as clip_fetch
 import modules.video.shorts as shorts
-import modules.video.youtube as youtube
+import modules.youtube.youtube as youtube
 
 def create_short():
     max_retries = 3
