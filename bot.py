@@ -2,6 +2,7 @@ import time
 import modules.twitch.clip_fetch as clip_fetch
 import modules.video.shorts as shorts
 import modules.youtube.youtube as youtube
+from modules.util.sanitization import sanitize_path
 
 def create_short():
     max_retries = 3
@@ -12,10 +13,10 @@ def create_short():
 
     for attempt in range(max_retries):
         try:
-            clip = clip_fetch.retrieve_clip()        
+            clip = clip_fetch.retrieve_clip()  
             shorts.generate_video(clip)
             youtube.upload_video(
-                f'content/shorts/{clip.title.replace(" ", "_").replace("/", "_").lower()}/product.mp4',
+                f'content/shorts/{sanitize_path(clip.title)}/product.mp4',
                 clip.title + " #shorts #clips",
                 "Featured streamer: " + clip.broadcaster_name + "\n\nSubscribe for more content like this!",
                 tags,
@@ -28,4 +29,3 @@ def create_short():
                 time.sleep(retry_delay)
             else:
                 print("Operation failed.")
-
