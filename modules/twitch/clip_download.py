@@ -2,6 +2,7 @@ import requests
 import os
 from modules.twitch.twitch_api import TwitchAPI
 from modules.util.auth import client_id, client_secret
+from modules.util.sanitization import sanitize_path
 
 api = TwitchAPI()
 api.auth(client_id, client_secret)
@@ -38,34 +39,52 @@ class ClipsExtractor:
                 clip_data['title'],
                 clip_data['thumbnail_url'],
                 clip_data['duration'],
-                f'content/raw_clips/{clip_data["title"].replace(" ", "_").replace("/", "_").lower()}.mp4',
-                clip_data['language']
+                f'content/raw_clips/{sanitize_path(clip_data["title"])}.mp4',
+                clip_data['language'],
             )
         return None
         
 class ClipsDownloader:
-    def download_clip(self, clip):
-        index = clip.thumbnail_url.find('-preview')
-        clip_url = clip.thumbnail_url[:index] + '.mp4'
+    def download_clip(self, clip, type, vod_title, order):
+        if type == "short":
+            thumbnail_url = clip.thumbnail_url
+        elif type == "vod":
+            thumbnail_url = clip["thumbnail_url"]
+
+        index = thumbnail_url.find('-preview')
+        clip_url = thumbnail_url[:index] + '.mp4'
 
         r = requests.get(clip_url, stream=True)
         if r.status_code == 200:
-            directory = f'content/shorts/{clip.title.replace(" ", "_").replace("/", "_").lower()}'
-            if not os.path.exists(directory):
-                os.makedirs(directory)
+            if type == "short":
+                sanitized_title = sanitize_path(clip.title)
+                directory = f'content/shorts/{sanitized_title}'
 
-            file_path = os.path.join(directory, 'raw_clip.mp4')
+                if not os.path.exists(directory):
+                    os.makedirs(directory)
+
+                file_path = os.path.join(directory, 'raw_clip.mp4')
             
-            with open(file_path, 'wb') as f:
-                f.write(r.content)
+                with open(file_path, 'wb') as f:
+                    f.write(r.content)
+            elif type == "vod":
+                sanitized_title = sanitize_path(vod_title)
+                directory = f'content/vods/{sanitized_title}'
+            
+                if not os.path.exists(directory):
+                    os.makedirs(directory)
+                
+                file_path = os.path.join(directory, order + '.mp4')
+
+                with open(file_path, 'wb') as f:
+                    f.write(r.content)
             
             return directory
         else:
-            print(f'Failed to download clip from URL: {clip_url}')
             return None
 
     def download_thumbnail(self, clip):
-        directory = f'content/shorts/{clip.title.replace(" ", "_").replace("/", "_").lower()}'
+        directory = f'content/shorts/{sanitize_path(clip.title)}'
         
         if not os.path.exists(directory):
             os.makedirs(directory)
