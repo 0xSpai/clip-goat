@@ -15,8 +15,6 @@ def get_authenticated_service():
 
     # Load credentials from file if it exists
     if os.path.exists(CREDENTIALS_FILE):
-        print(f"Found credentials file: {CREDENTIALS_FILE}")
-        print(f"File size: {os.path.getsize(CREDENTIALS_FILE)} bytes")
         try:
             with open(CREDENTIALS_FILE, 'rb') as token:
                 credentials = pickle.load(token)
@@ -52,7 +50,7 @@ def get_authenticated_service():
 
     return build('youtube', 'v3', credentials=credentials)
 
-def upload_video(file_path, title, description, tags, category_id):
+def upload_video(file_path, title, description, tags, category_id, status):
     try:
         media_file = MediaFileUpload(file_path, chunksize=-1, resumable=True)
         
@@ -64,7 +62,7 @@ def upload_video(file_path, title, description, tags, category_id):
                 'categoryId': category_id
             },
             'status': {
-                'privacyStatus': 'private'
+                'privacyStatus': status
             }
         }
         
@@ -81,6 +79,7 @@ def upload_video(file_path, title, description, tags, category_id):
                 print(f"Upload progress: {int(status.progress() * 100)}%")
         
         print(f"Upload complete! Video link: https://www.youtube.com/shorts/{response['id']}")
+        return response['id']
     
     except Exception as e:
         print(f"An error occurred: {e}")
