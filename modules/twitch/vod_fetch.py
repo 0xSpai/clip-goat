@@ -69,7 +69,7 @@ def get_relevant_vod():
 
     if attempts == 5:
         return None
-    
+
 def get_vod_clips(vod_id):
     headers = {
         'Client-ID': client_id,
@@ -135,7 +135,8 @@ def get_vod_clips(vod_id):
                 'end': clip_end,
                 'duration': clip_duration,
                 'view_count': clip['view_count'],
-                'thumbnail_url': clip['thumbnail_url']
+                'thumbnail_url': clip['thumbnail_url'],
+                'broadcaster_name': clip['broadcaster_name'],
             })
 
     sorted_clips = sorted(filtered_clips, key=lambda x: x['start'])
