@@ -19,3 +19,18 @@ def error(string):
     webhook = DiscordWebhook(url=discord_webhook, content=content, allowed_mentions=allowed_mentions)
     webhook.add_embed(embed)
     webhook.execute()
+
+def success(string):
+    content = "@everyone"
+    allowed_mentions = {
+    "parse": ["everyone"],
+    }
+    embed = DiscordEmbed(
+        title="Video Uploaded",
+        color=0x00FF00,
+    )
+    embed.add_embed_field(name="Video details", value=str(string), inline=False)
+
+    webhook = DiscordWebhook(url=discord_webhook, content=content, allowed_mentions=allowed_mentions)
+    webhook.add_embed(embed)
+    webhook.execute()
