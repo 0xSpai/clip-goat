@@ -11,7 +11,7 @@ def blur_frame(frame, blur_radius):
     return np.array(blurred_img)
 
 def generate_video(clip):
-    video = VideoFileClip(f'content/products/{sanitize_path(clip.title)}' + "/raw_clip.mp4")#.subclip(0, 1)
+    video = VideoFileClip(f'content/output/{sanitize_path(clip.title)}' + "/raw_clip.mp4")#.subclip(0, 1)
 
     # Formatting
     shorts_width = 720
@@ -113,5 +113,5 @@ def generate_video(clip):
     final_video = CompositeVideoClip([top_blurred, bottom_blurred, centered_video, txt_clip, bottom_txt_clip], size=(shorts_width, shorts_height))
     final_video = final_video.set_duration(video.duration)
 
-    output_path = os.path.join(f'content/products/{sanitize_path(clip.title)}', "product" + ".mp4")
+    output_path = os.path.join(f'content/output/{sanitize_path(clip.title)}', "product" + ".mp4")
     final_video.write_videofile(output_path, codec="libx264")
