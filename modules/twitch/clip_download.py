@@ -58,7 +58,7 @@ class ClipsDownloader:
         if r.status_code == 200:
             if type == "short":
                 sanitized_title = sanitize_path(clip.title)
-                directory = f'content/products/{sanitized_title}'
+                directory = f'content/output/{sanitized_title}'
 
                 if not os.path.exists(directory):
                     os.makedirs(directory)
@@ -69,7 +69,7 @@ class ClipsDownloader:
                     f.write(r.content)
             elif type == "vod":
                 sanitized_title = sanitize_path(vod_title)
-                directory = f'content/products/{sanitized_title}'
+                directory = f'content/output/{sanitized_title}'
             
                 if not os.path.exists(directory):
                     os.makedirs(directory)
@@ -84,7 +84,7 @@ class ClipsDownloader:
             return None
 
     def download_thumbnail(self, clip):
-        directory = f'content/products/{sanitize_path(clip.title)}'
+        directory = f'content/output/{sanitize_path(clip.title)}'
         
         if not os.path.exists(directory):
             os.makedirs(directory)
