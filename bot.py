@@ -134,10 +134,13 @@ def select_video():
     options = [create_vod, create_highlights]
     choice = random.choice(options)
     choice()
-
+'''
 schedule.every().day.at("17:30").do(select_video)
 schedule.every().day.at("14:30").do(create_short)
 
 while True:
     schedule.run_pending()
     time.sleep(300)
+'''
+
+create_vod()
